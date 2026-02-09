@@ -1,0 +1,46 @@
+version: "3.8"
+
+services:
+  producer:
+    build:
+      context: ./producer
+      dockerfile: Dockerfile
+    container_name: grpc-producer
+    restart: unless-stopped
+    ports:
+      - "50051:50051"
+    environment:
+      - NODE_ENV=production
+      - GRPC_HOST=0.0.0.0
+      - GRPC_PORT=50051
+    networks:
+      - grpc-network
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z 127.0.0.1 50051"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 2s
+
+  consumer:
+    build:
+      context: ./consumer
+      dockerfile: Dockerfile
+    container_name: grpc-consumer
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - USERS_PRODUCER_GRPC_URL=producer:50051
+      - PORT=3000
+    networks:
+      - grpc-network
+    depends_on:
+      producer:
+        condition: service_healthy
+
+networks:
+  grpc-network:
+    driver: bridge
+    name: grpc-network
