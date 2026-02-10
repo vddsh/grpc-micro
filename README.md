@@ -28,9 +28,3 @@ npm run start:dev
 docker compose build --no-cache
 docker compose up
 ```
-
-
-
-
-ewfoniewnifwnfei test2
-SOME TEXT1
