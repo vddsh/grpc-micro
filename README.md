@@ -33,3 +33,4 @@ docker compose up
 
 
 ewfoniewnifwnfei test2
+SOME TEXT1
